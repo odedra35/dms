@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "user_id": 1,
+        "name": "example.com",
+        "status": "Up",
+        "ssl_expiration": "2024-12-31T00:00:00"
+    },
+    {
+        "id": 2,
+        "user_id": 1,
+        "name": "anotherdomain.com",
+        "status": "Down",
+        "ssl_expiration": "2024-06-15T00:00:00"
+    }
+]

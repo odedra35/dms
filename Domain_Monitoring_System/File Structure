@@ -1,0 +1,12 @@
+project_root/
+├── app.py               # Main application entry point
+├── services/
+│   └── user_service.py  # Logic for user authentication
+├── users.json           # JSON file storing user data
+├── templates/
+│   ├── login.html
+│   ├── register.html
+├── static/
+│   └── css/
+│       └── styles.css
+└── config.py 
