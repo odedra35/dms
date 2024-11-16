@@ -1,153 +1,25 @@
-/* Nordic Color Palette */
-:root {
-  --nordic-dark-blue: #2E3A47;
-  --nordic-light-blue: #4C6B8C;
-  --nordic-gray: #B0BEC5;
-  --nordic-light-gray: #E3E9F1;
-  --nordic-white: #F4F9FC;
-  --nordic-ice-blue: #A7BBC7;
-}
-
-/* General styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: Arial, sans-serif;
-  background-color: var(--nordic-white);
-  color: var(--nordic-dark-blue);
+    font-family: Arial, sans-serif;
 }
 
-header, footer {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+h1 {
+    color: #333;
 }
 
-/* Top Banner */
-header {
-  width: 100%;
-  height: 15vh; /* 15% of viewport height */
-  background-color: var(--nordic-light-blue);
-  color: var(--nordic-white);
-  font-size: 2rem;
+form {
+    margin-top: 20px;
 }
 
-/* Middle Section */
-.main-content {
-  display: flex;
-  height: 75vh; /* 75% of viewport height */
+input[type="text"], input[type="password"] {
+    padding: 10px;
+    width: 300px;
+    margin-bottom: 10px;
 }
 
-.left-box, .right-box {
-  padding: 20px;
-  height: 100%;
-}
-
-.left-box {
-  width: 25%;
-  background-color: var(--nordic-gray);
-}
-
-.right-box {
-  width: 75%;
-  background-color: var(--nordic-ice-blue);
-}
-
-/* Login Form Styles */
-.reg-form {
-  display: flex;
-  flex-direction: column;
-  width: 80%;  /* Adjust to fit within the box */
-  max-width: 400px; /* Limit max width */
-  background-color: var(--nordic-light-gray);
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  font-size: 1rem;
-  margin-bottom: 5px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: var(--nordic-white);
-}
-
-
-button:hover {
-  background-color: var(--nordic-light-blue);
-}
-
-/* Footer */
-footer {
-  width: 100%;
-  height: 10vh; /* 10% of viewport height */
-  background-color: var(--nordic-dark-blue);
-  color: var(--nordic-white);
-  font-size: 1.2rem;
-}
-
-/* Style for the form container */
-.reg-form, .login-form {
-    margin: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Adds space between form elements */
-}
-
-/* Style for the buttons */
-button {
-    padding: 15px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-top: 5px; /* Add margin to separate buttons from other elements */
-    border: none;
-    background-color: var(--nordic-dark-blue);
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-
-/* Optional: Styling for the toggle buttons to distinguish them from submit button */
-#switchFormBtn, #switchBackBtn {
-    background-color: var(--nordic-dark-blue); /* Blue color for the toggle button */
-}
-
-/* Button spacing when in the same line */
-button + button {
-    margin-top: 3px; /* Ensure there's space between consecutive buttons */
-}
-
-/* Styling for the "Already Registered" and "New User" buttons (toggle buttons) */
-#switchFormBtn, #switchBackBtn {
-    margin-top: 3px; /* Add space above the toggle buttons */
-    text-align: center; /* Ensure the text is centered */
-}
-
-#switchFormBtn, #switchBackBtn {
-    display: inline-block; /* Allow buttons to be aligned properly */
-    width: 100%; /* Make the toggle button fill the width of its container */
-    text-align: center; /* Center text inside the button */
-}
-
-/* Ensure the buttons don't overlap by making them block-level when needed */
-button[type="submit"], #switchFormBtn, #switchBackBtn {
-    width: 100%;
+    border: none;
+    cursor: pointer;
 }

@@ -1,51 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="#">
-    <title>Domain Monitoring System</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Domain</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
-    <!-- Firefox un-styled page flashing fix -->
-    <script>0</script>
-    <header>
-        <h1>Domain Monitoring System</h1>
-    </header>
-
-    <div class="main-content">
-        <div class="left-box">
-            <!-- Domain Check Form (Initially hidden) -->
-            <form id="frm-domain" action="#" method="post" class="domain-frm">
-                <h2>Domain Check</h2><br>
-                <div class="form-group">
-                    <label for="dom-txt">Domain:</label>
-                    <input type="text" id="dom-txt" name="dom-txt" required placeholder="Enter url (e.g. 'google.come')">
-                </div>
-
-                <!-- Bulk Domain Check Via File -->
-                <div class="form-group">
-                    <label for="dom-file">Bulk Domains:</label>
-                    <input type="file" id="dom-file" name="dom-file" onchange="displayFileName()">
-                    <p id="file-name">No file selected</p>
-                </div>
-                <button type="submit">Submit</button><br><br>
-                <!-- Logout button -->
-                <button type="button" id="logout" onclick="logoutUser()">Logout</button>
-            </form>
-        </div>
-
-        <div class="right-box">
-            <h2>Right Box</h2>
-            <p>This is the right middle section.</p>
-        </div>
-    </div>
-
-    <footer>
-        <p>Footer content goes here</p>
-    </footer>
-
-    <script src="script_domain.js"></script>
+    <h1>Domain</h1>
+    <form action="/domain" method="post">
+        <label for="domain">Domain:</label>
+        <input type="text" id="domain" name="domain" required>
+        <br>
+        <input type="submit" value="Validate">
+    </form>
 </body>
 </html>
