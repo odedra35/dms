@@ -1,0 +1,44 @@
+[2024-11-16 02:44:35,126 - app_logger.py:26, Function: <module>] INFO - Clear app.log...
+[2024-11-16 02:44:35,205 - _internal.py:97, Function: _log] WARNING -  * Debugger is active!
+[2024-11-16 02:44:35,208 - _internal.py:97, Function: _log] INFO -  * Debugger PIN: 647-794-943
+[2024-11-16 02:44:35,623 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:44:35] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:44:36,060 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:44:36] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:44:36,060 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:44:36] "[36mGET /script.js HTTP/1.1[0m" 304 -
+[2024-11-16 02:44:47,684 - routes.py:58, Function: login] INFO - Performing login for user 'dav'...
+[2024-11-16 02:44:47,687 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:44:47] "POST /login HTTP/1.1" 200 -
+[2024-11-16 02:48:10,962 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:48:10] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:48:10,994 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:48:10] "[36mGET /script.js HTTP/1.1[0m" 304 -
+[2024-11-16 02:48:10,994 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:48:10] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:49:05,920 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:05] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:49:05,985 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:05] "GET /script.js HTTP/1.1" 200 -
+[2024-11-16 02:49:05,989 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:05] "GET /style.css HTTP/1.1" 200 -
+[2024-11-16 02:49:13,932 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:13] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:49:13,980 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:13] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:49:13,981 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:13] "[36mGET /script.js HTTP/1.1[0m" 304 -
+[2024-11-16 02:49:14,868 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:14] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:49:14,911 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:14] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:49:14,912 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:49:14] "[36mGET /script.js HTTP/1.1[0m" 304 -
+[2024-11-16 02:50:01,335 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:50:01] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:50:01,396 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:50:01] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:50:01,396 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:50:01] "GET /script.js HTTP/1.1" 200 -
+[2024-11-16 02:50:06,876 - routes.py:39, Function: register_user] INFO - Performing register for user 'dav' into DB...
+[2024-11-16 02:50:06,877 - users_db_manager.py:35, Function: add_user_to_db] ERROR - user 'dav' already exists in users.json.
+[2024-11-16 02:50:06,878 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:50:06] "POST /register HTTP/1.1" 200 -
+[2024-11-16 02:50:12,516 - routes.py:58, Function: login] INFO - Performing login for user 'dav'...
+[2024-11-16 02:50:12,518 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:50:12] "POST /login HTTP/1.1" 200 -
+[2024-11-16 02:51:21,653 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:51:21] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:51:21,737 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:51:21] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:51:21,738 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:51:21] "GET /script.js HTTP/1.1" 200 -
+[2024-11-16 02:51:27,749 - routes.py:39, Function: register_user] INFO - Performing register for user 'dav' into DB...
+[2024-11-16 02:51:27,749 - users_db_manager.py:35, Function: add_user_to_db] ERROR - user 'dav' already exists in users.json.
+[2024-11-16 02:51:27,750 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:51:27] "POST /register HTTP/1.1" 200 -
+[2024-11-16 02:51:34,696 - routes.py:58, Function: login] INFO - Performing login for user 'dav'...
+[2024-11-16 02:51:34,697 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:51:34] "POST /login HTTP/1.1" 200 -
+[2024-11-16 02:52:29,583 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:52:29] "GET / HTTP/1.1" 200 -
+[2024-11-16 02:52:29,638 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:52:29] "[36mGET /style.css HTTP/1.1[0m" 304 -
+[2024-11-16 02:52:29,639 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:52:29] "GET /script.js HTTP/1.1" 200 -
+[2024-11-16 02:52:40,116 - routes.py:39, Function: register_user] INFO - Performing register for user 'dav' into DB...
+[2024-11-16 02:52:40,116 - users_db_manager.py:35, Function: add_user_to_db] ERROR - user 'dav' already exists in users.json.
+[2024-11-16 02:52:40,117 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:52:40] "POST /register HTTP/1.1" 200 -
+[2024-11-16 02:52:43,019 - routes.py:58, Function: login] INFO - Performing login for user 'dav'...
+[2024-11-16 02:52:43,020 - _internal.py:97, Function: _log] INFO - 127.0.0.1 - - [16/Nov/2024 02:52:43] "POST /login HTTP/1.1" 200 -
