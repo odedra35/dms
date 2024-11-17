@@ -1,25 +1,82 @@
-from flask import render_template, request
-from app import app
+from flask import Flask, render_template, request, redirect, url_for, session
+from dms.app.users.users_db_manager import add_user_to_db, authenticate_user
+from dms.app.loggers.app_logger import get_app_logger
 import requests
 import ssl
 import socket
 import datetime
 
+logger = get_app_logger()
+person_index: int = 1
+
+app = Flask(__name__)
+# required for session stored user data
+app.secret_key = "MyVerySecretKeyHere!111"
+
+
 @app.route('/')
-@app.route('/login', methods=['GET', 'POST'])
+def home():
+    return render_template("index.html")
+
+
+@app.route("/<filename>", methods=["GET"])
+def get_file(filename: str):
+    return app.send_static_file(filename)
+
+
+@app.route("/register", methods=['POST'])
+def register_user():
+    if request.method == "POST":
+        username = request.json['username']
+        password = request.json['password']
+
+        if not username.strip() or not password.strip():
+            return {"status": "Error", "message": "Username and Password can't be empty."}
+
+        if len(username) > 50 or len(password) > 20:
+            return {"status": "Error", "message": "Please limit your username to 50 and password to 20 characters."}
+
+        # Feel free to add username and password validations here.
+
+        logger.info(f"Performing register for user {username!r} into DB...")
+        try:
+            add_user_to_db(username, password)
+        except Exception as e:
+            return {"status": "Error", "message": f"Error on login: {e}"}
+
+        return {"status": "Pass", "message": ""}
+
+
+@app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        # Add your login validation logic here
-        return render_template('domain.html')
-    return render_template('login.html')
+        username = request.json['username']
+        password = request.json['password']
+
+        if not username.strip() or not password.strip():
+            logger.error("Username and Password can't be empty.")
+            return {"status": "Error", "message": "Username and Password can't be empty."}
+
+        logger.info(f"Performing login for user {username!r}...")
+        try:
+            authenticate_user(username, password)
+            session["user"] = username
+        except Exception as e:
+            logger.error(f"Error on login: {e}")
+            return {"status": "Error", "message": f"Error on login: {e}"}
+
+        return {"status": "Pass", "message": ""}
+    return redirect(url_for("home"))
+
 
 @app.route('/domain', methods=['GET', 'POST'])
 def domain():
+    if 'user' not in session:
+        return redirect(url_for('home'))  # Redirect to the home page if user is not logged in
+
     if request.method == 'POST':
         domain_name = request.form['domain']
-        
+
         # Check if the domain is up
         try:
             response = requests.get(f'https://{domain_name}')
@@ -45,5 +102,13 @@ def domain():
             domain_expired = False
         
         return f'Domain: {domain_name} is up: {domain_up}, SSL is valid: {ssl_valid}, Expired: {domain_expired}'
-    
     return render_template('domain.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop("user", None)  # Remove the username from the session
+    return redirect(url_for('home'))
+
+
+app.run(host="0.0.0.0", port=8080, debug=True)
