@@ -33,7 +33,7 @@
             </form>
 
             <!-- Login Form (Initially hidden) -->
-            <form id="frm-login" action="#" method="post" class="login-form" style="display: none;">
+            <form id="frm-login" action="/login" method="post" class="login-form" style="display: none;">
                 <h2>Login Form</h2><br>
                 <div class="form-group">
                     <label for="login-username">Username:</label>
@@ -43,7 +43,7 @@
                     <label for="login-password">Password:</label>
                     <input type="password" id="login-password" name="login-password" required placeholder="Enter your password">
                 </div>
-                <button type="submit">Login</button><br><br>
+                <button type="submit" onclick="">Login</button><br><br>
                 <!-- Button to switch to register form -->
                 <button type="button" id="switchBackBtn" onclick="toggleForms()">New User? Register Here</button>
             </form>

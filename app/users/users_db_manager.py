@@ -46,7 +46,7 @@ def add_user_to_db(user_name: str, password: str) -> bool:
     return True
 
 
-def check_user_in_db(user_name: str, password: str) -> bool:
+def authenticate_user(user_name: str, password: str) -> bool:
     """Authenticate user and password in users file.
 
     :return: True - if user found in db and password is correct

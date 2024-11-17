@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from dms.app.users.users_db_manager import add_user_to_db, check_user_in_db
+from dms.app.users.users_db_manager import add_user_to_db, authenticate_user
 from dms.app.loggers.app_logger import get_app_logger
 import requests
 import ssl
@@ -36,6 +36,8 @@ def register_user():
         if len(username) > 50 or len(password) > 20:
             return {"status": "Error", "message": "Please limit your username to 50 and password to 20 characters."}
 
+        # Feel free to add username and password validations here.
+
         logger.info(f"Performing register for user {username!r} into DB...")
         try:
             add_user_to_db(username, password)
@@ -57,20 +59,24 @@ def login():
 
         logger.info(f"Performing login for user {username!r}...")
         try:
-            check_user_in_db(username, password)
+            authenticate_user(username, password)
             session["user"] = username
         except Exception as e:
             logger.error(f"Error on login: {e}")
             return {"status": "Error", "message": f"Error on login: {e}"}
 
-    return render_template('domain.html')
+        return {"status": "Pass", "message": ""}
+    return redirect(url_for("home"))
 
 
 @app.route('/domain', methods=['GET', 'POST'])
 def domain():
+    if 'user' not in session:
+        return redirect(url_for('home'))  # Redirect to the home page if user is not logged in
+
     if request.method == 'POST':
         domain_name = request.form['domain']
-        
+
         # Check if the domain is up
         try:
             response = requests.get(f'https://{domain_name}')
@@ -101,7 +107,7 @@ def domain():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)  # Remove the username from the session
+    session.pop("user", None)  # Remove the username from the session
     return redirect(url_for('home'))
 
 

@@ -5,7 +5,7 @@ const LogOutUser = document.getElementById('logout');
 /* -------------------Register User----------------------- */
 async function registerUser(username, password){
     console.log(`Register user ${username} ${password}`);
-    const loginData = {
+    const regData = {
         username: username,
         password: password
     };
@@ -15,7 +15,7 @@ async function registerUser(username, password){
         headers: {
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify(loginData) // Convert the data to JSON format
+        body: JSON.stringify(regData) // Convert the data to JSON format
     });
 
     const data = await response.json();
@@ -36,11 +36,11 @@ FrmRegister.addEventListener("submit", function(event){
 /* -------------------Register User------------------------ */
 
 /* ---------------------Login User------------------------- */
-async function loginUser(username, password){
-    console.log(`Login user ${username} ${password}`);
+async function loginUser(loginUserName, LoginPassword){
+    console.log(`Login user ${loginUserName} ${LoginPassword}`);
     const loginData = {
-        username: username,
-        password: password
+        username: loginUserName,
+        password: LoginPassword
     };
 
     const response = await fetch('/login', {
@@ -51,20 +51,23 @@ async function loginUser(username, password){
         body: JSON.stringify(loginData) // Convert the data to JSON format
     });
 
-//    const data = await response.json();
-//    if (data.message != "") {
-//        console.error(`Message: ${data.message}`);
-//    }
+    const loginResponse = await response.json();
+    if (loginResponse.message != "") {
+        console.error(`Message: ${loginResponse.message}`);
+    }
+    //get response from /login
+    window.location.href = "domain.html";
+    //iframe
 }
 
 
 FrmLogin.addEventListener("submit", function(event){
     console.log('LoginForm submitted.');
     event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const loginUserName = document.getElementById('login-username').value;
+    const loginPassword = document.getElementById('login-password').value;
 
-    loginUser(username, password);
+    loginUser(loginUserName, loginPassword);
 });
 /* ---------------------Login User------------------------- */
 
@@ -96,5 +99,3 @@ function displayFileName() {
     var fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
     document.getElementById('file-name').textContent = 'Selected file: ' + fileName;
 }
-
-
