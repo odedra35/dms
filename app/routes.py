@@ -7,7 +7,7 @@ from domains.domains import check_ssl_and_status, update_user_domains_db, check_
 
 app = Flask(__name__)
 # todo fill before run
-app.secret_key = 'ljnadfl;Avadvf\AEWF\ ;q EFQ\ ACD @#$ W2134123q#%!@#4RQRDAFD BFAWF\V;/.><'
+app.secret_key = ''
 
 URLS_LIMIT = 100
 TIME_LIMIT = 5
