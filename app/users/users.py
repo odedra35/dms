@@ -5,9 +5,8 @@ from collections import defaultdict
 from dms.app.loggers.app_logger import get_app_logger
 
 logger = get_app_logger()
-users_db = "users.json"
+users_db = "users/users.json"
 users_cache = defaultdict(dict)
-index = 1
 
 if not os.path.isfile(users_db):
     with open(users_db, "w") as f:
@@ -20,27 +19,28 @@ def _user_already_exists(user_name: str) -> tuple[bool, str]:
     :param user_name: string of username
     :return: bool - False is user not found in file
     """
-    with open(users_db, "r") as f:
-        users = json.load(f)
+    with open(users_db, "r") as fr:
+        users = json.load(fr)
 
-    for user, user_details in users.items():
-        if user_details["username"] == user_name:
-            return True, user_details["password"]
-    return False, ""
+    if not user_name.strip():
+        return False, ""
+
+    if f"{user_name}" not in users:
+        return False, ""
+
+    return True, users[f"{user_name}"]["password"]
 
 
 def add_user_to_db(user_name: str, password: str) -> bool:
-    """Add new user to user_db file."""
+    """Add new user to user_db file.
+
+    :return: False if user already in db, else True
+    """
     if _user_already_exists(user_name)[0]:
         logger.error(f"user {user_name!r} already exists in users.json.")
         return False
-    try:
-        idx = globals()["index"]
-        users_cache[f"User{idx}"] = {"username": user_name, "password": password}
-        globals()["index"] += 1
-    except Exception as e:
-        logger.error(f"{e}")
 
+    users_cache.setdefault(f"{user_name}", {"username": user_name, "password": password})
     with open(users_db, "w") as fw:
         json.dump(users_cache, fw)
     return True
@@ -54,6 +54,14 @@ def authenticate_user(user_name: str, password: str) -> bool:
     user_found, user_password = _user_already_exists(user_name)
     if not user_found:
         return False
-    if user_password != password:
-        return False
-    return True
+    return user_password == password
+
+
+def check_user_in_db(username: str) -> tuple[str, str]:
+    """Returns username and password if user found in db."""
+    # db is empty
+    if not users_cache:
+        return "", ""
+
+    found, password = _user_already_exists(username)
+    return ("", "") if not found else (username, password)

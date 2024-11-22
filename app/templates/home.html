@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome {{ username }}</h1>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+    <hr>
+    <!-- Text Input Form -->
+    <form action="/add_domain" method="POST">
+        <label for="single-url">Single Check URL:</label><br><br>
+        <input id="single-url" name="single-url" placeholder="url.com..." size="35" required>
+        <input type="submit" value="Check URL">
+    </form><br><br><br>
+
+    <!-- File Upload Form -->
+    <form action="/bulk_upload" method="POST" enctype="multipart/form-data">
+        <label for="file-upload">Bulk URL check via file:</label><br><br>
+        <input type="file" id="file-upload" name="file-upload" required>
+        <input type="submit" value="Upload Bulk File">
+    </form>
+
+    {% if answer  %}
+    <ul>
+        <!-- Loop through the dictionary and display key-value pairs -->
+        {% for key, value in answer.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul><br><br>
+    {% endif %}
+
+    {% if answer_list %}
+    <ul>
+    <!-- Loop through the list of dictionaries and display key-value pairs -->
+    {% for answer in answer_list %}
+        {% for key, value in answer.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul><br><br>
+    {% endif %}
+
+    {% if error %}
+        <div>{{ error }}</div>
+    {% endif %}
+
+    {% if timed %}
+        <div>Executed in {{ timed }} seconds</div>
+    {% endif %}
+</body>
+</html>

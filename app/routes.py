@@ -1,114 +1,147 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from dms.app.users.users_db_manager import add_user_to_db, authenticate_user
-from dms.app.loggers.app_logger import get_app_logger
-import requests
-import ssl
-import socket
-import datetime
+import time
 
-logger = get_app_logger()
-person_index: int = 1
+from flask import Flask, render_template, redirect, request, url_for, session
+
+from users.users import add_user_to_db, authenticate_user, check_user_in_db
+from domains.domains import check_ssl_and_status, update_user_domains_db, check_ssl_and_status_bulk
 
 app = Flask(__name__)
-# required for session stored user data
-app.secret_key = "MyVerySecretKeyHere!111"
+# todo fill before run
+app.secret_key = 'ljnadfl;Avadvf\AEWF\ ;q EFQ\ ACD @#$ W2134123q#%!@#4RQRDAFD BFAWF\V;/.><'
 
+URLS_LIMIT = 100
+TIME_LIMIT = 5
+ERROR_LIMIT_PCT = 2
 
 @app.route('/')
 def home():
-    return render_template("index.html")
+    # Check if the user is logged in
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    user = session.get("username")
+
+    return render_template('home.html', username=user)
 
 
-@app.route("/<filename>", methods=["GET"])
-def get_file(filename: str):
-    return app.send_static_file(filename)
+@app.route('/add_domain', methods=['POST'])
+def check_single():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    user = session.get("username")
+
+    if request.method == 'POST':
+        url = request.form['single-url']
+
+        start = time.time()
+        # Perform singly url check
+        answer = check_ssl_and_status(url)
+        err = update_user_domains_db(session.get("username"), answer)
+
+        timed = time.time() - start
+        print(f"{timed=} seconds")
+        return render_template('home.html', username=user, answer=answer, timed=timed, error=err)
+    return render_template('home.html')
 
 
-@app.route("/register", methods=['POST'])
-def register_user():
-    if request.method == "POST":
-        username = request.json['username']
-        password = request.json['password']
+def error_check(answer_list) -> float:
+    """Check if URL(s) with 'N/A' status request exceeds limit."""
+    if not answer_list:
+        return 0
 
-        if not username.strip() or not password.strip():
-            return {"status": "Error", "message": "Username and Password can't be empty."}
-
-        if len(username) > 50 or len(password) > 20:
-            return {"status": "Error", "message": "Please limit your username to 50 and password to 20 characters."}
-
-        # Feel free to add username and password validations here.
-
-        logger.info(f"Performing register for user {username!r} into DB...")
-        try:
-            add_user_to_db(username, password)
-        except Exception as e:
-            return {"status": "Error", "message": f"Error on login: {e}"}
-
-        return {"status": "Pass", "message": ""}
+    errors = list(filter(lambda x: x['status'] == "N/A" and x['ssl_expiration'] == 'N/A', answer_list))
+    return len(errors) / len(answer_list) * 100
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/bulk_upload', methods=['POST'])
+def bulk_upload():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    user = session.get("username")
+
+    if "file-upload" not in request.files:
+        return render_template("home.html")
+
+    if request.method == 'POST':
+        url_file = request.files['file-upload']
+
+        # Only accept .txt files
+        if not url_file.filename.endswith(".txt"):
+            return render_template("home.html", username=user, error="File type should be '.txt'")
+
+        start = time.time()
+        answer_list = check_ssl_and_status_bulk(url_file.stream.read(), URLS_LIMIT)
+
+        # File is empty or too large (>100 urls per user)
+        if not answer_list:
+            render_template('home.html', username=user, error=f"file is empty or exceeded urls limit - {URLS_LIMIT}")
+
+        # Save domains into user db
+        err = update_user_domains_db(user, answer_list)
+        if err:
+            render_template('home.html', username=user, error=f"General error - {err}")
+
+        # Operation time limit calculation
+        timed = round(time.time() - start, 2)
+
+        # Status and SSL Error limit calculation
+        error_pct = error_check(answer_list)
+
+        print(f"{error_pct=}%")
+        if error_pct > ERROR_LIMIT_PCT:
+            return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"URL status and SSL error ({error_pct}%) limit ({ERROR_LIMIT_PCT}%) was exceeded!")
+
+        print(f"{timed=}")
+        if timed > TIME_LIMIT:
+            return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"Operation time limit ({TIME_LIMIT} seconds) was exceeded!")
+
+        return render_template('home.html', username=user, answer_list=answer_list, timed=timed)
+    return render_template('home.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.json['username']
-        password = request.json['password']
+        # Get form data (username and password)
+        username = request.form['username']
+        password = request.form['password']
 
-        if not username.strip() or not password.strip():
-            logger.error("Username and Password can't be empty.")
-            return {"status": "Error", "message": "Username and Password can't be empty."}
-
-        logger.info(f"Performing login for user {username!r}...")
-        try:
-            authenticate_user(username, password)
-            session["user"] = username
-        except Exception as e:
-            logger.error(f"Error on login: {e}")
-            return {"status": "Error", "message": f"Error on login: {e}"}
-
-        return {"status": "Pass", "message": ""}
-    return redirect(url_for("home"))
+        # Check if user exists and the password is correct
+        if authenticate_user(username, password):
+            session['username'] = username  # Store username in session
+            return redirect(url_for('home'))  # Redirect to home page if login is successful
+        else:
+            return render_template('login.html', error='Invalid credentials')  # Show error if login fails
+    return render_template('login.html')
 
 
-@app.route('/domain', methods=['GET', 'POST'])
-def domain():
-    if 'user' not in session:
-        return redirect(url_for('home'))  # Redirect to the home page if user is not logged in
-
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
-        domain_name = request.form['domain']
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
 
-        # Check if the domain is up
-        try:
-            response = requests.get(f'https://{domain_name}')
-            domain_up = response.status_code == 200
-        except:
-            domain_up = False
-        
-        # Check if the SSL certificate is valid
-        try:
-            context = ssl.create_default_context()
-            with context.wrap_socket(socket.socket(), server_hostname=domain_name) as s:
-                s.connect((domain_name, 443))
-                ssl_valid = True
-        except ssl.CertificateError:
-            ssl_valid = False
-        
-        # Check if the domain is expired
-        try:
-            domain_info = socket.gethostbyname_ex(domain_name)
-            domain_expiration_date = domain_info[2][0]
-            domain_expired = datetime.datetime.strptime(domain_expiration_date, '%Y-%m-%d') < datetime.datetime.now()
-        except:
-            domain_expired = False
-        
-        return f'Domain: {domain_name} is up: {domain_up}, SSL is valid: {ssl_valid}, Expired: {domain_expired}'
-    return render_template('domain.html')
+        db_user, db_password = check_user_in_db(username)
+        # Check if username already exists
+        if db_user:
+            return render_template('register.html', error='Username already taken')
+
+        # Check if passwords match
+        if password != confirm_password:
+            return render_template('register.html', error='Passwords do not match')
+
+        # Register the user
+        add_user_to_db(username, password)
+        return redirect(url_for('login'))  # Redirect to login page after successful registration
+
+    return render_template('register.html')
 
 
 @app.route('/logout')
 def logout():
-    session.pop("user", None)  # Remove the username from the session
-    return redirect(url_for('home'))
+    session.pop('username', None)  # Remove the user from the session
+    return redirect(url_for('login'))  # Redirect to login page
 
 
-app.run(host="0.0.0.0", port=8080, debug=True)
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8080, debug=True)
