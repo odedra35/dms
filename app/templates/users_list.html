@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Users List</h1>
+    </header>
+
+    <div class="main-content">
+        <div class="left-box">
+            <h2>All Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, user_details in users.items() %}
+                    <tr>
+                        <td>{{ user_details.username }}</td>
+                        <td>{{ user_details.password }}</td>
+                        <td>
+                            <form action="/delete_user/{{ user }}" method="POST" style="display: inline;">
+                                <button type="submit">Delete</button>
+                            </form>
+                            <form action="/change_password/{{ user }}" method="GET" style="display: inline;">
+                                <button type="submit">Change Password</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="right-box">
+        </div>
+    </div>
+    <footer>
+        <p>This is a DataBase to manage the users</p>
+    </footer>
+
+</body>
+</html>
