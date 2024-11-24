@@ -2,7 +2,7 @@ import os
 import json
 
 from collections import defaultdict
-from dms.app.loggers.app_logger import get_app_logger
+from loggers.app_logger import get_app_logger
 
 logger = get_app_logger()
 users_db = "users.json"
@@ -57,3 +57,26 @@ def authenticate_user(user_name: str, password: str) -> bool:
     if user_password != password:
         return False
     return True
+
+
+def remove_user_from_db(username: str) -> bool:
+    """Remove a user from the users database (users.json)."""
+    try:
+        with open(users_db, 'r') as f:
+            users = json.load(f)
+
+        # אם המשתמש קיים תמחק אותו
+        if username in users:
+            del users[username]
+
+            # תעדכן את הרשימה
+            with open(users_db, 'w') as f:
+                json.dump(users, f)
+
+            logger.info(f"User {username} deleted successfully.")
+            return True
+        else:
+            return False  # User not found
+    except Exception as e:
+        logger.error(f"Error removing user {username}: {e}")
+        return False
