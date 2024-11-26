@@ -105,22 +105,19 @@
         <div class="login">
             <div class="content">
                 <h2>Login</h2>
-                <form action="/login" method="POST" class="form">
-                    <div class="inputBox">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" required>
-                    </div>
-                    <div class="inputBox">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    <div class="inputBox">
-                        <input type="submit" value="Login">
-                    </div>
+                <form action="/register" method="POST">
+                    <label for="username">Username:</label><br>
+                    <input type="text" id="username" name="username" required><br><br>
+            
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required><br><br>
+            
+                    <label for="confirm_password">Confirm Password:</label><br>
+                    <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+            
+                    <input type="submit" value="Register">
                 </form>
-                <div class="links">
-                    <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
-                </div>
+                <p>Already have an account? <a href="login.html">Login here</a></p>
             </div>
         </div>
     </section>

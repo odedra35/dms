@@ -1,0 +1,115 @@
+<html>
+  <head>
+        <title>Domain SSL and Liveness Information</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f9f9f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .live {
+            color: green;
+        }
+
+        .down {
+            color: red;
+        }
+
+        .ssl-expired {
+            color: red;
+        }
+
+        .ssl-valid {
+            color: green;
+        
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+        
+        #json-file {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Domain SSL and Liveness Information</h1><br>
+    <h2>Welcome {{ username }}</h2>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+    <hr>
+
+    <!-- upload txt section -->
+    <form action="/bulk_upload" method="POST" enctype="multipart/form-data">
+        <label for="file-upload">Bulk URL check via file:</label><br><br>
+        <input type="file" id="file-upload" name="file-upload" required>
+        <input type="submit" value="Upload Bulk File">
+    </form>
+</div>
+<form action="/add_domain" method="POST">
+    <label for="single-url">Single Check URL:</label><br><br>
+    <input id="single-url" name="single-url" placeholder="url.com..." size="35" required>
+    <input type="submit" value="Check URL">
+</form><br><br><br>
+</div>
+<table border="1">
+    <thead>
+        <tr>
+               <th>Domain</th>
+               <th>Liveness Status</th>
+               <th>SSL Expiration Date</th>
+               <th>SSL Issuer</th>
+            
+            
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through the list of dictionaries and display key-value pairs in table rows -->
+        {% for answer in answer_list %}
+                <tr>
+                    <td><strong>{{ answer['domain'] }}</strong></td>
+                    <td><strong>{{ answer['status'] }}</strong></td>
+                    <td><strong>{{ answer['ssl_expiration'] }}</strong></td>
+                    <td><strong>{{ answer['ssl_issuer'] }}</strong></td>
+                </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+
+
+
+
+</html>
