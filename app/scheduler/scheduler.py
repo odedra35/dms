@@ -149,7 +149,7 @@ class ScheduledURLCheck(threading.Thread):
     def __calculate_diff_given_time_interval(self) -> float:
         """Calculate time diff in seconds till next scan, given 1 hour(s) intervals."""
 
-        seconds_till_scan = int(self.__hours) * 60 # todo 3600
+        seconds_till_scan = int(self.__hours) * 3600 #
         self.__next_scan_time = datetime.now() + timedelta(seconds=seconds_till_scan)
         print(f"scheduled scan: {self.__next_scan_time}")
         print(f"seconds till scan: {seconds_till_scan}")

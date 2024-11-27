@@ -8,8 +8,8 @@ from users.users import add_user_to_db, authenticate_user, check_user_in_db
 from domains.domains import update_user_domains_db, check_ssl_and_status_bulk, error_check
 
 app = Flask(__name__)
-# todo remove before upload
-app.secret_key = 'LAnNDiKNAiD1238785ddjfdgroasdflknq10)/*|*\-l34ne134190u23ie-039i-e4091i(*_(&U1341/3.,4e,;;'
+# remove before upload
+app.secret_key = ''
 
 URLS_LIMIT = 100
 TIME_LIMIT = 5
