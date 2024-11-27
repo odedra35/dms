@@ -1,17 +1,20 @@
 import time
+from sched import scheduler
 
 from flask import Flask, render_template, redirect, request, url_for, session
 
+from dms.app.scheduler.scheduler import ScheduledURLCheck, clear_user_scheduler, add_user_scheduler, SCHEDULERS
 from users.users import add_user_to_db, authenticate_user, check_user_in_db
-from domains.domains import check_ssl_and_status, update_user_domains_db, check_ssl_and_status_bulk
+from domains.domains import update_user_domains_db, check_ssl_and_status_bulk, error_check
 
 app = Flask(__name__)
-# todo remove before upload
-app.secret_key = 'LAnNDiKNAiD1238785ddjfdgroasdflknq10)/*|*\-l34ne134190u23ie-039i-e4091i(*_(&U1341/3.,4e,;;'
+# remove before upload
+app.secret_key = ''
 
 URLS_LIMIT = 100
 TIME_LIMIT = 5
 ERROR_LIMIT_PCT = 2
+
 
 @app.route('/')
 def home():
@@ -31,25 +34,38 @@ def check_single():
 
     if request.method == 'POST':
         url = request.form['single-url']
+        radio_option_hours = request.form.get('radio-option-hours')  # Every X Hours
+        radio_option_fixed = request.form.get('radio-option-fixed')  # Fixed hour in day
+        hours_input = request.form.get('hours-input')    # Number input
+        fixed_input = request.form.get('fixed-input')  # Fixed time input
+        disable = request.form.get('radio-option-disable')
+        print(f"r_op_h {radio_option_hours}\nr_op_f {radio_option_fixed}\nDisable {disable}\nhours {hours_input}\nfixed {fixed_input}")
 
-        start = time.time()
-        # Perform singly url check
-        answer = check_ssl_and_status(url)
-        err = update_user_domains_db(session.get("username"), answer)
+        # User scheduled a timed Url check
+        if hours_input or fixed_input:
 
-        timed = time.time() - start
-        print(f"{timed=} seconds")
-        return render_template('home.html', username=user, answer=answer, timed=timed, error=err)
+            # Make new (overwrite) scheduler for user
+            msg = add_user_scheduler(user, url, URLS_LIMIT, hours_input, fixed_input)
+            if msg:
+                return render_template('home.html', username=user, error=msg)
+
+        # User cleared a timed Url check
+        elif disable:
+            msg = clear_user_scheduler(user)
+            return render_template('home.html', username=user, error=msg)
+
+        # Normal single check
+        else:
+            start = time.time()
+            # Perform singly url check
+            answer_list = check_ssl_and_status_bulk(url, URLS_LIMIT)
+            err = update_user_domains_db(user, answer_list)
+
+            timed = time.time() - start
+            print(f"{timed=} seconds")
+            return render_template('home.html', username=user, answer_list=answer_list, timed=timed, error=err)
     return render_template('home.html')
 
-
-def error_check(answer_list) -> float:
-    """Check if URL(s) with 'N/A' status request exceeds limit."""
-    if not answer_list:
-        return 0
-
-    errors = list(filter(lambda x: x['status'] == "N/A" and x['ssl_expiration'] == 'N/A', answer_list))
-    return len(errors) / len(answer_list) * 100
 
 
 @app.route('/bulk_upload', methods=['POST'])
@@ -64,38 +80,62 @@ def bulk_upload():
     if request.method == 'POST':
         url_file = request.files['file-upload']
 
+        radio_option_hours = request.form.get('radio-option-hours')  # Every X Hours
+        radio_option_fixed = request.form.get('radio-option-fixed')  # Fixed hour in day
+        hours_input = request.form.get('hours-input')    # Number input
+        fixed_input = request.form.get('fixed-input')  # Fixed time input
+        disable = request.form.get('radio-option-disable')
+        print(f"r_op_h {radio_option_hours}\nr_op_f {radio_option_fixed}\nDisable {disable}\nhours {hours_input}\nfixed {fixed_input}")
+
         # Only accept .txt files
         if not url_file.filename.endswith(".txt"):
             return render_template("home.html", username=user, error="File type should be '.txt'")
 
-        start = time.time()
-        answer_list = check_ssl_and_status_bulk(url_file.stream.read(), URLS_LIMIT)
+        # User scheduled a timed Url check
+        if hours_input or fixed_input:
 
-        # File is empty or too large (>100 urls per user)
-        if not answer_list:
-            render_template('home.html', username=user, error=f"file is empty or exceeded urls limit - {URLS_LIMIT}")
+            # Make new (overwrite) scheduler for user
+            msg = add_user_scheduler(user, url_file.stream.read(), URLS_LIMIT, hours_input, fixed_input)
+            if msg:
+                return render_template('home.html', username=user, error=msg)
 
-        # Save domains into user db
-        err = update_user_domains_db(user, answer_list)
-        if err:
-            render_template('home.html', username=user, error=f"General error - {err}")
+        # User cleared a timed Url check
+        elif disable:
+            msg = clear_user_scheduler(user)
+            return render_template('home.html', username=user, error=msg)
 
-        # Operation time limit calculation
-        timed = round(time.time() - start, 2)
+        # Normal Multi check
+        else:
 
-        # Status and SSL Error limit calculation
-        error_pct = error_check(answer_list)
+            start = time.time()
+            answer_list = check_ssl_and_status_bulk(url_file.stream.read(), URLS_LIMIT)
 
-        print(f"{error_pct=}%")
-        if error_pct > ERROR_LIMIT_PCT:
-            return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"URL status and SSL error ({error_pct}%) limit ({ERROR_LIMIT_PCT}%) was exceeded!")
+            # File is empty or too large (>100 urls per user)
+            if not answer_list:
+                render_template('home.html', username=user, error=f"file is empty or exceeded urls limit - {URLS_LIMIT}")
 
-        print(f"{timed=}")
-        if timed > TIME_LIMIT:
-            return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"Operation time limit ({TIME_LIMIT} seconds) was exceeded!")
+            # Save domains into user db
+            err = update_user_domains_db(user, answer_list)
+            if err:
+                render_template('home.html', username=user, error=f"General error - {err}")
 
-        return render_template('home.html', username=user, answer_list=answer_list, timed=timed)
+            # Operation time limit calculation
+            timed = round(time.time() - start, 2)
+
+            # Status and SSL Error limit calculation
+            error_pct = error_check(answer_list)
+
+            print(f"{error_pct=}%")
+            if error_pct > ERROR_LIMIT_PCT:
+                return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"URL status and SSL error ({error_pct}%) limit ({ERROR_LIMIT_PCT}%) was exceeded!")
+
+            print(f"{timed=}")
+            if timed > TIME_LIMIT:
+                return render_template("home.html", username=user, timed=timed, answer_list=answer_list, error=f"Operation time limit ({TIME_LIMIT} seconds) was exceeded!")
+
+            return render_template('home.html', username=user, answer_list=answer_list, timed=timed)
     return render_template('home.html')
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
