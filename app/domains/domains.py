@@ -37,23 +37,22 @@ def check_ssl_and_status_bulk(urls, url_limit_per_user: int = 100) -> list:
     """Checks multiple urls at once based on given file."""
 
     # Remove duplicated urls
-    urls = list(set(urls.splitlines()))
+    if not isinstance(urls, list):
+        urls = list(set(urls.splitlines()))
+
     if not urls or len(urls) > url_limit_per_user:
         return []
 
     # Execute status and ssl details check in parallel
     with futures.ThreadPoolExecutor(max_workers=url_limit_per_user) as executer:
-        future = list(executer.map(check_ssl_and_status,urls))
+        future = list(executer.map(_check_ssl_and_status,urls))
     return future
 
 
-def check_ssl_and_status(url: Union[str, bytes]) -> dict:
+def _check_ssl_and_status(url: Union[str, bytes]) -> dict:
     """Check SSL expiration and response code concurrently."""
     url = url.decode() if not isinstance(url, str) else url
     hostname = url.split('//')[-1].split('/')[0]
-
-    # print(f"checking ssl and status for url: {url}")
-    # start = time.time()
 
     try:
         # Check response code and ssl details
@@ -66,7 +65,6 @@ def check_ssl_and_status(url: Union[str, bytes]) -> dict:
             "status": "Pending" if rc != 200 else "Alive",
             "ssl_expiration": f"{expiration_date}",
             "ssl_issuer": f"common name - {cert_issuer!r}",
-            # "answer-time": f"{(time.time() - start):.2f} seconds",
         }
     except requests.exceptions.RequestException:
         return {
@@ -74,7 +72,6 @@ def check_ssl_and_status(url: Union[str, bytes]) -> dict:
             "status": "N/A",
             "ssl_expiration": "N/A",
             "ssl_issuer": "N/A",
-            # "answer-time": f"{(time.time() - start):.2f} seconds",
         }
     return response
 
@@ -91,42 +88,52 @@ def update_user_domains_db(username: str, domains: Union[dict, list[dict]]) -> s
     :param username: string representing the username
     :param domains: dict with domain, status, ssl_expiration, ssl_issuer
     """
+
     file_name = f"domains/{username}_domains.json"
     domains = domains if isinstance(domains, list) else [domains]
     print(domains)
-    # todo
-    # try:
-    if not os.path.isfile(file_name):
-        print(f"creating file {file_name!r}")
-        _create_user_domains_db(file_name)
 
-    write_domains = {}
-    for domain in domains:
-        print(f"domain: {domain}")
+    try:
+        if not os.path.isfile(file_name):
+            print(f"creating file {file_name!r}")
+            _create_user_domains_db(file_name)
 
-        # domain is empty = skip
-        new_domain = domain.get("domain", "")
-        if not new_domain:
-            continue
+        write_domains = {}
+        for domain in domains:
+            print(f"domain: {domain}")
 
-        # Create temp dict with domain name as key
-        write_domains.setdefault(new_domain, domain)
+            # domain is empty = skip
+            new_domain = domain.get("domain", "")
+            if not new_domain:
+                continue
 
-    # Read current state of known domains
-    print(f"Loading file: {file_name}")
-    with open(file_name, "r") as fr:
-        current_domains = dict(json.load(fr))
+            # Create temp dict with domain name as key
+            write_domains.setdefault(new_domain, domain)
 
-    # Overwrite with updated domain info OR concat new domains
-    current_domains.update(write_domains)
+        # Read current state of known domains
+        print(f"Loading file: {file_name}")
+        with open(file_name, "r") as fr:
+            current_domains = dict(json.load(fr))
 
-    # Write updated domain information into db
-    print(f"Writing to file {file_name!r} info:\n{current_domains}")
-    print(f"{os.path.isfile(file_name)=}")
-    with open(file_name, "w") as fw:
-        json.dump(current_domains, fw)
-    # todo
-    # except Exception as e:
-    #     print(f"{e}")
-    #     return f"{e}"
-    # return ""
+        # Overwrite with updated domain info OR concat new domains
+        current_domains.update(write_domains)
+
+        # Write updated domain information into db
+        print(f"Writing to file {file_name!r} info:\n{current_domains}")
+        print(f"{os.path.isfile(file_name)=}")
+        with open(file_name, "w") as fw:
+            json.dump(current_domains, fw)
+
+    except Exception as e:
+        print(f"{e}")
+        return f"{e}"
+    return ""
+
+
+def error_check(answer_list: list) -> float:
+    """Check if URL(s) with 'N/A' status request exceeds limit."""
+    if not answer_list:
+        return 0
+
+    errors = list(filter(lambda x: x['status'] == "N/A" and x['ssl_expiration'] == 'N/A', answer_list))
+    return len(errors) / len(answer_list) * 100

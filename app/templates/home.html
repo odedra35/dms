@@ -6,31 +6,48 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>Welcome {{ username }}</h1>
+    <h1>Welcome {{ username | title}}</h1>
     <p><a href="{{ url_for('logout') }}">Logout</a></p>
     <hr>
     <!-- Text Input Form -->
     <form action="/add_domain" method="POST">
-        <label for="single-url">Single Check URL:</label><br><br>
-        <input id="single-url" name="single-url" placeholder="url.com..." size="35" required>
+        <label for="single-url">Check URL: </label>
+        <input id="single-url" name="single-url" placeholder="url.com..." size="35" required><br><br>
+
+        <!-- Radio buttons to select Time or Number -->
+        <label>Check Every Hour(s) OR In Fixed Times:</label><br><br>
+        <input type="radio" name="radio-option-hours" value="Hours"> Check Every Hours(s)
+            <input type="number" name="hours-input" value="" placeholder="Check every (x) hours..."> <br><br>
+        <input type="radio" name="radio-option-fixed" value="Fixed"> Check Every Fix Hour
+            <input type="time" name="fixed-input" value=""> <br><br>
+        <input type="radio" name="radio-option-disable" value="Disabled"> Disable The Scheduled Check <br><br>
+
         <input type="submit" value="Check URL">
-    </form><br><br><br>
+    </form><br><br>
+    <hr>
 
     <!-- File Upload Form -->
     <form action="/bulk_upload" method="POST" enctype="multipart/form-data">
-        <label for="file-upload">Bulk URL check via file:</label><br><br>
-        <input type="file" id="file-upload" name="file-upload" required>
-        <input type="submit" value="Upload Bulk File">
-    </form>
+        <label for="file-upload">Bulk URL check via file:</label>
+        <input type="file" id="file-upload" name="file-upload" required><br><br>
 
-    {% if answer  %}
-    <ul>
-        <!-- Loop through the dictionary and display key-value pairs -->
-        {% for key, value in answer.items() %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
-        {% endfor %}
-    </ul><br><br>
-    {% endif %}
+        <!-- Radio buttons to select Time or Number -->
+        <label>Check Every Hour(s) OR In Fixed Times:</label><br><br>
+        <input type="radio" name="radio-option-hours" value="Hours"> Check Every Hours(s)
+            <input type="number" name="hours-input" value="" placeholder="Check every (x) hours..."> <br><br>
+        <input type="radio" name="radio-option-fixed" value="Fixed"> Check Every Fix Hour
+            <input type="time" name="fixed-input" value=""> <br><br>
+        <input type="radio" name="radio-option-disable" value="Disabled"> Disable The Scheduled Check <br><br>
+
+
+        <input type="submit" value="Upload Bulk File">
+    </form><br>
+    <hr>
+
+    <div>
+
+    </div><br>
+    <hr>
 
     {% if answer_list %}
     <ul>
@@ -50,5 +67,24 @@
     {% if timed %}
         <div>Executed in {{ timed }} seconds</div>
     {% endif %}
+
+
+    <script>
+        // JavaScript to show the correct input based on the radio selection
+        document.querySelectorAll('input[name="choice"]').forEach((elem) => {
+            elem.addEventListener('change', function() {
+                if (this.value === 'time') {
+                    document.getElementById('time').style.display = 'inline';
+                    document.getElementById('number').style.display = 'none';
+                } else if (this.value === 'number') {
+                    document.getElementById('number').style.display = 'inline';
+                    document.getElementById('time').style.display = 'none';
+                } else if (this.value === 'none'){
+            				document.getElementById('number').style.display = 'none';
+                    document.getElementById('time').style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
