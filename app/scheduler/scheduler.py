@@ -56,7 +56,6 @@ class ScheduledURLCheck(threading.Thread):
         self.__urls = urls
         self.__urls_limit = limit
 
-        self.__rate: int = 0
         self.__hours = ""
         if hours:
             self.__hours = hours  # static
