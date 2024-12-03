@@ -1,11 +1,10 @@
 import time
-from sched import scheduler
 
 from flask import Flask, render_template, redirect, request, url_for, session
 
-from dms.app.scheduler.scheduler import ScheduledURLCheck, clear_user_scheduler, add_user_scheduler, SCHEDULERS
-from users.users import add_user_to_db, authenticate_user, check_user_in_db
-from domains.domains import update_user_domains_db, check_ssl_and_status_bulk, error_check
+from scheduler import clear_user_scheduler, add_user_scheduler
+from users import add_user_to_db, authenticate_user, check_user_in_db
+from domains import update_user_domains_db, check_ssl_and_status_bulk, error_check
 
 app = Flask(__name__)
 # remove before upload
