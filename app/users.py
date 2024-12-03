@@ -3,7 +3,7 @@ import json
 
 from collections import defaultdict
 
-users_db = "users/users.json"
+users_db = "users.json"
 users_cache = defaultdict(dict)
 index = 1
 
