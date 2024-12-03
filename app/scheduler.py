@@ -5,7 +5,7 @@ from typing import Optional, Union
 from dateutil import parser
 from datetime import datetime, timedelta
 
-from dms.app.domains.domains import check_ssl_and_status_bulk, update_user_domains_db
+from domains import check_ssl_and_status_bulk, update_user_domains_db
 
 
 SCHEDULERS: dict[str, "ScheduledURLCheck"] = {}

@@ -89,7 +89,7 @@ def update_user_domains_db(username: str, domains: Union[dict, list[dict]]) -> s
     :param domains: dict with domain, status, ssl_expiration, ssl_issuer
     """
 
-    file_name = f"domains/{username}_domains.json"
+    file_name = f"{username}_domains.json"
     domains = domains if isinstance(domains, list) else [domains]
     print(domains)
 
