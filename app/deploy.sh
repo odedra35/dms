@@ -16,7 +16,7 @@ check_rc
 
 # Clone Repository
 echo "Cloning repository..."
-chdir /home/ubuntu/
+cd /home/ubuntu/
 git clone https://github.com/odedra35/dms
 check_rc
 
@@ -27,7 +27,7 @@ check_rc
 
 # Switch to dev branch
 echo "Switch to dev branch..."
-chdir /home/ubuntu/dms/app
+cd /home/ubuntu/dms/app
 git switch dev
 check_rc
 
