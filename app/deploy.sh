@@ -22,7 +22,7 @@ check_rc
 
 # Check Repository dir
 echo "Checking dms/app dir is present..."
-test -f dms/app
+test -d dms/app
 check_rc
 
 # Switch to dev branch
