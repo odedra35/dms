@@ -32,7 +32,7 @@ check_rc
 
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
-sudo pip install -r /home/ubuntu/dms/app/requiremtns.txt --break-system-packages
+sudo pip install -r /home/ubuntu/dms/app/requirements.txt --break-system-packages
 check_rc
 
 # Unblock 8080/tcp port using ufw
