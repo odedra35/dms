@@ -47,6 +47,6 @@ check_rc
 # Run APP in bg
 echo "Starting routes.py..."
 chmod +x routes.py
-python3 routes.py &
+python3 routes.py
 
 exit 0
