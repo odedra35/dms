@@ -27,13 +27,12 @@ check_rc
 
 # Switch to dev branch
 echo "Switch to dev branch..."
-cd /home/ubuntu/dms/app
 git switch dev
 check_rc
 
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
-sudo pip install -r requiremtns.txt --break-system-packages
+sudo pip install -r /home/ubuntu/dms/app/requiremtns.txt --break-system-packages
 check_rc
 
 # Unblock 8080/tcp port using ufw
