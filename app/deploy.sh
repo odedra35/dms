@@ -36,7 +36,7 @@ check_rc
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
 pwd
-sudo pip install -r requirements.txt --break-system-packages
+sudo pip install -r requirements.txt --break-system-packages --ignore-installed
 check_rc
 
 # Unblock 8080/tcp port using ufw
