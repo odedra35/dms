@@ -27,7 +27,7 @@ check_rc
 
 # Switch to dev branch
 echo "Switch to dev branch..."
-git switch dev
+/home/ubuntu/dms/app/git switch dev
 check_rc
 
 # Install python packages
