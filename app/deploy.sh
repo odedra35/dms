@@ -9,6 +9,8 @@ check_rc () {
   fi
 }
 
+REPO_DIR="/home/ubuntu/dms/app"
+
 # Install Essentials
 echo "Installing Python3, Git, and PIP..."
 sudo apt update && sudo apt install -y python3 && sudo apt install -y pip && sudo apt install -y git
@@ -16,7 +18,6 @@ check_rc
 
 # Clone Repository
 echo "Cloning repository..."
-cd /home/ubuntu/
 git clone https://github.com/odedra35/dms
 check_rc
 
@@ -27,12 +28,15 @@ check_rc
 
 # Switch to dev branch
 echo "Switch to dev branch..."
-/home/ubuntu/dms/app/git switch dev
+cd $REPO_DIR
+pwd
+git switch dev
 check_rc
 
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
-sudo pip install -r /home/ubuntu/dms/app/requirements.txt --break-system-packages
+pwd
+sudo pip install -r requirements.txt --break-system-packages
 check_rc
 
 # Unblock 8080/tcp port using ufw
