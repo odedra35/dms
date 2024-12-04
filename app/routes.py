@@ -8,7 +8,7 @@ from domains import update_user_domains_db, check_ssl_and_status_bulk, error_che
 
 app = Flask(__name__)
 # remove before upload
-app.secret_key = ''
+app.secret_key = 'LKNASDLFKNPIJlsdkanfdakml,nfqajip1351365135;;'
 
 URLS_LIMIT = 100
 TIME_LIMIT = 5
