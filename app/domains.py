@@ -9,6 +9,7 @@ from concurrent import futures
 
 def _get_ssl_expiration_date(hostname: str) -> tuple:
     """Get the SSL certificate expiration date."""
+    hostname = hostname.replace("https://", "").replace("http://", "").replace("www.", "")
     try:
 
         context = ssl.create_default_context()
@@ -29,6 +30,7 @@ def _get_ssl_expiration_date(hostname: str) -> tuple:
 
 def _get_response_code(url: str) -> int:
     """Get the HTTP response code using aiohttp."""
+    url = f"https://{url}"
     response = requests.get(url, timeout=3.5)
     return response.status_code
 
