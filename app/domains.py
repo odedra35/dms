@@ -9,7 +9,7 @@ from concurrent import futures
 
 def _get_ssl_expiration_date(hostname: str) -> tuple:
     """Get the SSL certificate expiration date."""
-    hostname = hostname.replace("https://", "").replace("http://", "").replace("www.", "")
+    hostname = hostname.replace("www.", "")
     try:
 
         context = ssl.create_default_context()
@@ -30,7 +30,6 @@ def _get_ssl_expiration_date(hostname: str) -> tuple:
 
 def _get_response_code(url: str) -> int:
     """Get the HTTP response code using aiohttp."""
-    url = f"https://{url}"
     response = requests.get(url, timeout=3.5)
     return response.status_code
 
@@ -50,12 +49,18 @@ def check_ssl_and_status_bulk(urls, url_limit_per_user: int = 100) -> list:
         future = list(executer.map(_check_ssl_and_status,urls))
     return future
 
-
 def _check_ssl_and_status(url: Union[str, bytes]) -> dict:
     """Check SSL expiration and response code concurrently."""
     url = url.decode() if not isinstance(url, str) else url
+    prefix = "https://"
+    if "//" not in url:
+        url = f"{prefix}{url}"
+    if "www." not in url:
+        url = f"https://www.{url.lstrip('https://')}"
+    
     hostname = url.split('//')[-1].split('/')[0]
 
+#www.ynet.co.il
     try:
         # Check response code and ssl details
         rc = _get_response_code(url)
