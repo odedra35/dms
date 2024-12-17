@@ -36,14 +36,14 @@ check_rc
 
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
-pwd
 cd $REPO_DIR
-sudo pip install -r requirements.txt --break-system-packages --ignore-installed
+pwd
+pip install -r requirements.txt --break-system-packages --ignore-installed
 check_rc
 
 # Unblock 8080/tcp port using ufw
 echo "Unblock ufw port 8080..."
-sudo ufw allow 8080/tcp
+ufw allow 8080/tcp
 check_rc
 
 # Run APP in bg
