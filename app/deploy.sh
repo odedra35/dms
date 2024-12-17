@@ -12,13 +12,13 @@ check_rc () {
 REPO_DIR="/home/ubuntu/dms/app"
 
 # Install Essentials
-echo "Installing Python3, Git, and PIP..."
-sudo apt update && sudo apt install -y python3 && sudo apt install -y pip && sudo apt install -y git
+echo "Installing Python3, Git, PIP, and Docker..."
+sudo apt update && sudo apt install -y python3 && sudo apt install -y pip && sudo apt install -y git && apt install -y docker.io
 check_rc
 
 # Clone Repository
 echo "Cloning repository..."
-git clone https://github.com/odedra35/dms
+git clone -b dev https://github.com/odedra35/dms
 check_rc
 
 # Check Repository dir
@@ -27,11 +27,11 @@ test -d dms/app
 check_rc
 
 # Switch to dev branch
-echo "Switch to dev branch..."
-cd $REPO_DIR
-pwd
-git switch dev
-check_rc
+#echo "Switch to dev branch..."
+#cd $REPO_DIR
+#pwd
+#git switch dev
+#check_rc
 
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
