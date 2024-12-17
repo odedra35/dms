@@ -13,7 +13,8 @@ REPO_DIR="/home/ubuntu/dms/app"
 
 # Install Essentials
 echo "Installing Python3, Git, PIP, and Docker..."
-sudo apt update && sudo apt install -y python3 && sudo apt install -y pip && sudo apt install -y git && apt install -y docker.io
+sudo -i
+apt update && apt install -y python3 && apt install -y pip && apt install -y git && apt install -y docker.io
 check_rc
 
 # Clone Repository
