@@ -13,8 +13,7 @@ REPO_DIR="/home/ubuntu/dms/app"
 
 # Install Essentials
 echo "Installing Python3, Git, PIP, and Docker..."
-sudo -i
-apt update && apt install -y python3 && apt install -y pip && apt install -y git && apt install -y docker.io
+sudo apt update && sudo apt install -y python3 && sudo apt install -y pip && sudo apt install -y git && sudo apt install -y docker.io
 check_rc
 
 # Clone Repository
@@ -38,12 +37,12 @@ check_rc
 echo "Installing requirements.txt (breaking)..."
 cd $REPO_DIR
 pwd
-pip install -r requirements.txt --break-system-packages --ignore-installed
+sudo pip install -r requirements.txt --break-system-packages --ignore-installed
 check_rc
 
 # Unblock 8080/tcp port using ufw
 echo "Unblock ufw port 8080..."
-ufw allow 8080/tcp
+sudo ufw allow 8080/tcp
 check_rc
 
 # Run APP in bg
