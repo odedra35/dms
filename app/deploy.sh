@@ -37,6 +37,7 @@ check_rc
 # Install python packages
 echo "Installing requirements.txt (breaking)..."
 pwd
+cd $REPO_DIR
 sudo pip install -r requirements.txt --break-system-packages --ignore-installed
 check_rc
 
