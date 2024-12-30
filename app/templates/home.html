@@ -50,14 +50,28 @@
     <hr>
 
     {% if answer_list %}
-    <ul>
-    <!-- Loop through the list of dictionaries and display key-value pairs -->
-    {% for answer in answer_list %}
-        {% for key, value in answer.items() %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
+    <table border="1">
+    <caption>SSL Information for Domains</caption>
+    <thead>
+        <tr>
+           <th scope="col">Domain</th>
+           <th scope="col">Liveness Status</th>
+           <th scope="col">SSL Expiration Date</th>
+           <th scope="col">SSL Issuer</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through the list of dictionaries and display key-value pairs in table rows -->
+        {% for answer in answer_list %}
+            <tr>
+            <td><strong>{{ answer['domain'] }}</strong></td>
+            <td><strong>{{ answer['status'] }}</strong></td>
+            <td><strong>{{ answer['ssl_expiration'] }}</strong></td>
+            <td><strong>{{ answer['ssl_issuer'] }}</strong></td>
+            </tr>
         {% endfor %}
-    {% endfor %}
-    </ul><br><br>
+    </tbody>
+    </table><br><br>
     {% endif %}
 
     {% if error %}
@@ -88,3 +102,14 @@
     </script>
 </body>
 </html>
+
+
+
+<!--    <ul>-->
+<!--    &lt;!&ndash; Loop through the list of dictionaries and display key-value pairs &ndash;&gt;-->
+<!--    {% for answer in answer_list %}-->
+<!--        {% for key, value in answer.items() %}-->
+<!--            <li><strong>{{ key }}:</strong> {{ value }}</li>-->
+<!--        {% endfor %}-->
+<!--    {% endfor %}-->
+<!--    </ul><br><br>-->
