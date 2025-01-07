@@ -1,3 +1,4 @@
+import os
 import time
 
 from flask import Flask, render_template, redirect, request, url_for, session
@@ -8,7 +9,7 @@ from domains import update_user_domains_db, check_ssl_and_status_bulk, error_che
 
 app = Flask(__name__)
 # remove before upload
-app.secret_key = 'LKNASDLFKNPIJlsdkanfdakml,nfqajip1351365135;;'
+app.secret_key = os.urandom(24)
 
 URLS_LIMIT = 100
 TIME_LIMIT = 5
