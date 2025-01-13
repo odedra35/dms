@@ -1,0 +1,28 @@
+---
+  - name: Set Jenkins IP as a fact
+    set_fact:
+      jenkins_ip: "{{ ansible_host }}"
+
+  - name: Install Docker
+    apt:
+      name: docker.io
+      state: present
+  
+  - name: Create /var/jenkins_home
+    file:
+      name: /var/jenkins_home
+      state: directory
+
+  - name: Set directory Permissions
+    shell: chown -R 1000:1000 /var/jenkins_home
+
+  - name: Run Jenkins Container
+    docker_container:
+      name: jenkins
+      image: jenkins/jenkins
+      state: started
+      restart_policy: always
+      ports:
+        - "8080:8080"
+      volumes:
+        - /var/jenkins_home:/var/jenkins_home

@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+  roles:
+    - common_server
+
+- hosts: ec2_jenkins
+  tasks:
+    - name: Set Jenkins Private IP as a global fact
+      set_fact:
+      jenkins_ip_global: "{{ ansible_facts['default_ipv4']['address'] }}"
+  roles:
+     - jenkins
+
+  
