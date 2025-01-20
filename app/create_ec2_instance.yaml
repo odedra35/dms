@@ -1,0 +1,43 @@
+- name: Create EC2 ansible instance
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Create a new EC2 instance
+      amazon.aws.ec2_instance:
+        name: "ec2_ansible"
+        instance_type: "t2.micro"
+        security_group: "sg-02b3d29bdcd49a0cc"
+        region: "us-west-2"
+        image_id: "ami-00c257e12d6828491"
+        tags:
+           Key: "DMS"
+           Value: "ansible"
+        count: 1
+      register: ec2
+
+  environment:
+    ANSIBLE_CONFIG: /DMS/app/ansible.cfg
+
+- name: Create EC2 Docker instance
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Create a new EC2 instance
+      amazon.aws.ec2_instance:
+        name: "ec2_docker"
+        instance_type: "t2.micro"
+        security_group: "sg-02b3d29bdcd49a0cc"
+        region: "us-west-2"
+        image_id: "ami-00c257e12d6828491"
+        tags:
+           Key: "DMS"
+           Value: "docker"
+        count: 1
+      register: ec2
+
+  environment:
+    ANSIBLE_CONFIG: /DMS/app/ansible.cfg
+  
+  ##    environment:
+  ##      AWS_ACCESS_KEY_ID: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+  ##      AWS_SECRET_ACCESS_KEY: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"

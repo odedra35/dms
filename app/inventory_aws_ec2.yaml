@@ -4,8 +4,8 @@ regions:
 filters:                                              
   instance-state-name: running          
 keyed_groups:                            
-  - key: tags.Purpose                    
-    prefix: ec2                   
+  - key: tags.DMS                    
+    prefix: ec2                
 hostnames:                               
   - dns-name                            
 compose:
