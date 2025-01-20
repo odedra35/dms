@@ -1,13 +1,14 @@
 ---
   - name: Set Jenkins IP as a fact
     set_fact:
-      jenkins_ip: "{{ ansible_host }}"
+      jenkins_ip: 44.243.104.124
+    become: true
 
   - name: Install Docker
     apt:
       name: docker.io
       state: present
-  
+    
   - name: Create /var/jenkins_home
     file:
       name: /var/jenkins_home
@@ -15,6 +16,11 @@
 
   - name: Set directory Permissions
     shell: chown -R 1000:1000 /var/jenkins_home
+
+  - name: Download java jar file 
+    apt:
+     name: openjdk-8-jdk
+     state: present
 
   - name: Run Jenkins Container
     docker_container:
