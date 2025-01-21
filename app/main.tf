@@ -12,20 +12,24 @@ provider "aws" {
   region = "us-west-2"
 }
 
+# Data source to get the default security group
+data "aws_security_group" "default" {
+  name   = "default"
+  vpc_id = data.aws_vpc.default_vpc.id
+}
+
 # Define the first EC2 instance resource
 resource "aws_instance" "ec2_prod_one" {
   ami             = "ami-00c257e12d6828491"
   instance_type   = "t2.micro"
-  security_groups = ["sg-02b3d29bdcd49a0cc"]
-
+  security_groups = [data.aws_security_group.default.name]
 }
 
 # Define the second EC2 instance resource
 resource "aws_instance" "ec2_prod_two" {
   ami             = "ami-00c257e12d6828491"
   instance_type   = "t2.micro"
-  security_groups = ["sg-02b3d29bdcd49a0cc"]
-
+  security_groups = [data.aws_security_group.default.name]
 }
 
 # Data source to get the default VPC
@@ -33,20 +37,22 @@ data "aws_vpc" "default_vpc" {
   default = true
 }
 
+
 # Data source to get the subnet IDs of the default VPC
 data "aws_subnet_ids" "default_subnet" {
   vpc_id = data.aws_vpc.default_vpc.id
 }
 
-# Define the security group for the Application Load Balancer
-resource "aws_security_group" "alb" {
-  name = "alb-security-group"
+# Use the default security group for the Application Load Balancer
+resource "aws_security_group" "DMS_Security" {
+  name   = "DMS_Security"
+  vpc_id = data.aws_vpc.default_vpc.id
 }
 
 # Allow inbound HTTP traffic to the ALB
 resource "aws_security_group_rule" "allow_alb_http_inbound" {
   type              = "ingress"
-  security_group_id = aws_security_group.alb.id
+  security_group_id = aws_security_group.DMS_Security.id
   from_port         = 8080
   to_port           = 8080
   protocol          = "tcp"
@@ -56,7 +62,7 @@ resource "aws_security_group_rule" "allow_alb_http_inbound" {
 # Allow all outbound traffic from the ALB
 resource "aws_security_group_rule" "allow_alb_all_outbound" {
   type              = "egress"
-  security_group_id = aws_security_group.alb.id
+  security_group_id = aws_security_group.DMS_Security.id
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
@@ -68,7 +74,7 @@ resource "aws_lb" "load_balancer" {
   name               = "web-app-lb"
   load_balancer_type = "application"
   subnets            = data.aws_subnet_ids.default_subnet.ids
-  security_groups    = [aws_security_group.alb.id]
+  security_groups    = [aws_security_group.DMS_Security.id]
 }
 
 # Define the HTTP listener for the ALB
@@ -87,6 +93,8 @@ resource "aws_lb_listener" "http" {
       status_code  = 404
     }
   }
+
+  
 }
 
 # Define the target group for the EC2 instances
