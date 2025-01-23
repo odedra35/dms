@@ -8,17 +8,13 @@
   roles:
     - dms
 
-# - hosts: ec2_jenkins
-#   become: true
-#   tasks:
-#     - name: Set Jenkins Private IP as a global fact
-#       set_fact:
-#         jenkins_ip_global: "{{ ansible_facts['default_ipv4']['address'] }}"
-
-#     - name: Print debug message
-#       debug:
-#         msg: "Jenkins IP: {{ jenkins_ip_global }}"
-#   roles:
-#     - jenkins
+- hosts: ec2_jenkins
+  become: true
+  tasks:
+    - name: Set Jenkins Private IP as a global fact
+      set_fact:
+        jenkins_ip_global: "{{ ansible_facts['default_ipv4']['address'] }}"
+  roles:
+     - jenkins
 
    
