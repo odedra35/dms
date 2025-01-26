@@ -1,0 +1,47 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: admin
+         password: admin
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+  numExecutors: 0
+  nodes:
+    - permanent:
+        labelString: "docker"
+        mode: EXCLUSIVE  
+        name: "docker"
+        remoteFS: "/var/jenkins_home"
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+            webSocket: true
+    - permanent:
+        labelString: "ansible"
+        mode: EXCLUSIVE
+        name: "ansible"
+        remoteFS: "/var/jenkins_home"
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+            webSocket: true
+credentials:
+    system:
+      domainCredentials:
+        - credentials:
+            - usernamePassword:
+                id: "docker"
+                username: ${DOCKER_USERNAME}
+                password: ${DOCKER_PASSWORD}
+                scope: GLOBAL

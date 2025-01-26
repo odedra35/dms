@@ -1,0 +1,18 @@
+# ansible-galaxy collection install community.docker
+---
+  - name: Install Docker
+    apt:
+      name: docker.io
+      state: present
+      update_cache: yes
+
+  - name: Run DMS app
+    docker_container:
+      name: DMS
+      image: boazberelovich/dms-app:1.0.0
+      state: started
+      restart_policy: always
+      detach: true
+      recreate: yes
+      ports:
+        - "8080:8080"

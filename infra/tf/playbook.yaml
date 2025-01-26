@@ -1,0 +1,20 @@
+- hosts: group_DMS
+  become: true
+  roles:
+    - common_server
+
+- hosts: ec2_dms_prod
+  become: true
+  roles:
+    - dms
+
+- hosts: ec2_jenkins
+  become: true
+  tasks:
+    - name: Set Jenkins Private IP as a global fact
+      set_fact:
+        jenkins_ip_global: "{{ ansible_facts['default_ipv4']['address'] }}"
+  roles:
+     - jenkins
+
+   
