@@ -3,6 +3,15 @@
   roles:
     - common_server
 
+- hosts: all
+  become: true
+  tasks:
+    - name: Wait for SSH to come up
+      wait_for_connection:
+        timeout: 600
+        delay: 30
+        sleep: 5 
+
 - hosts: ec2_dms_prod
   become: true
   roles:

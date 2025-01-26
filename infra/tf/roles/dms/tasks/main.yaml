@@ -9,7 +9,7 @@
   - name: Run DMS app
     docker_container:
       name: DMS
-      image: boazberelovich/dms-app:1.0.0
+      image: boazberelovich/dms-app:1.0.1
       state: started
       restart_policy: always
       detach: true

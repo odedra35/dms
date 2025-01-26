@@ -82,10 +82,6 @@
     state: present
   when: inventory_hostname == "dms-jenkins"
 
-- name: Include encrypted Docker credentials
-  include_vars:
-    file: "docker_credentials.yml"
-
 - name: Download java jar file 
   apt:
      name: openjdk-8-jdk

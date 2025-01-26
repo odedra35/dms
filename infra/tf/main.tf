@@ -108,7 +108,6 @@ resource "aws_lb_listener" "http" {
     }
   }
 
-  
 }
 
 # Define the target group for the EC2 instances
@@ -128,6 +127,10 @@ resource "aws_lb_target_group" "instances" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
+   stickiness { 
+    type = "lb_cookie" 
+    cookie_duration = 86400 # 1 day in seconds 
+    }
 }
 
 # Attach the first EC2 instance to the target group
