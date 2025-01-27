@@ -1,0 +1,47 @@
+pipeline {
+    agent 'dms-docker'
+
+    stages {
+        stage('Clone repository') {
+            steps {
+                git branch: 'dev', url: 'https://github.com/odedra35/dms.git'
+                 script {
+                    fullCommitId = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                    commitId = fullCommitId.substring(0, 5)
+                }
+            }
+        }
+
+         }
+            stage('docker build & run'){
+                steps {
+                    dir('app') {
+                        script {
+                            echo "Commit ID is ${commitId}"
+                        }
+                        sh """
+                        sudo docker build -t dms-app:${fullCommitId} . 1> /dev/null
+                        sudo docker run --network host --name dms-app -p 8080:8080 -d dms-app:${fullCommitId}
+                        """
+                    }
+                }
+            }
+
+        stage('Run Selenium tests') {
+            steps {
+                sh '''
+                    docker exec $(docker ps -q -f "ancestor=my-dms-app") pip install selenium pytest
+                    docker exec $(docker ps -q -f "ancestor=my-dms-app") pytest testing.py
+                '''
+            }
+        }
+    post{
+         failure {
+            echo 'Error - Build failed.'
+        }
+        always {
+            sh 'sudo docker rm -f $(sudo docker ps -aq)'
+            echo 'This will always run after the stages, regardless of the result.'
+        }
+    }
+ }
