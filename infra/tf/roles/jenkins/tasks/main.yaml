@@ -15,7 +15,7 @@
     path: /mnt/jenkins_home
     state: directory
     mode: '0777'
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
 
 - name: Set user 1000 owner on the folder
   file:
@@ -23,32 +23,32 @@
     owner: '1000'
     group: '1000'
     recurse: yes
-  when: inventory_hostname == "dms-jenkins"
+  # when: inventory_hostname == "dms-jenkins"
     
 - name: Create another folder for config
   file:
     path: /mnt/jenkins_home/config
     state: directory
     mode: '0777'
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
  
 - name: Copy Dockerfile
   copy:
     src: Dockerfile
     dest: "/mnt/jenkins_home/config/Dockerfile"
-  when: inventory_hostname == "dms-jenkins"
+ #  when: inventory_hostname == "dms-jenkins"
     
 - name: Copy plugins.txt
   copy:
     src: plugins.txt
     dest: "/mnt/jenkins_home/config/plugins.txt"
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
     
 - name: Copy jenkins.yaml (JCasC config)
   copy:
     src: jenkins.yaml
     dest: "/mnt/jenkins_home/jenkins.yaml"
-  when: inventory_hostname == "dms-jenkins"
+#  when: inventory_hostname == "dms-jenkins"
 
 
 - name: Create jobs directory
@@ -56,21 +56,21 @@
     path: /mnt/jenkins_home/jobs
     state: directory
     mode: '0777'
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
 
 - name: Create Pipeline job directory
   file:
     path: /mnt/jenkins_home/jobs/PipeLine
     state: directory
     mode: '0777'
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
 
 - name: Copy Pipeline job configuration
   copy:
     src: PipeLine/
     dest: /mnt/jenkins_home/jobs/PipeLine/
     mode: '0777'
-  when: inventory_hostname == "dms-jenkins"
+# when: inventory_hostname == "dms-jenkins"
   
 - name: Build custom Jenkins Docker image
   docker_image:
@@ -80,14 +80,15 @@
       pull: yes
     source: build
     state: present
-  when: inventory_hostname == "dms-jenkins"
+#  when: inventory_hostname == "dms-jenkins"
 
 - name: Download java jar file 
   apt:
      name: openjdk-8-jdk
      state: present
 
-- name: Run Jenkins Container
+- name: Run Jenkins Container 
+
   docker_container:
     name: jenkins
     image: jenkins/jenkins:lts
@@ -101,7 +102,7 @@
     volumes:
      - /mnt/jenkins_home:/var/jenkins_home
  # restart_policy: always
-  when: inventory_hostname == "dms-jenkins"
+ # when: inventory_hostname == "dms-jenkins"
    
 - name: Set recursive 777 permissions
   file:
@@ -109,4 +110,4 @@
     mode: '0777'
     recurse: yes
     state: directory
-  when: inventory_hostname == "dms-jenkins"
+  # when: inventory_hostname == "dms-jenkins"
