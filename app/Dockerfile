@@ -4,3 +4,4 @@ RUN chmod 777 /docker_dms
 COPY . /docker_dms
 WORKDIR /docker_dms
 RUN pip install -r requirements.txt 
+RUN python3 routes.py
