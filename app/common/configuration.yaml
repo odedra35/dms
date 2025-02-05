@@ -1,0 +1,30 @@
+routes:
+  SECRET_KEY: "kljasd13!@@#$@#$2342@423asSSDFSDFVSdf23"
+  URLS_LIMIT: 100
+  TIME_LIMIT: 5
+  ERROR_LIMIT_PCT: 2
+
+domains:
+  response_timeout: "3.5"
+  limit_per_user: 100
+
+##scheduler:
+  ##SOME_SCHEDULER_CONFIG: "some_value"
+
+users:
+  users_db: "users.json"
+  user_index: 1
+
+logger:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    simple:
+      format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: simple
+  root:
+    level: INFO  # Set the default logging level here
+    handlers: [console]
